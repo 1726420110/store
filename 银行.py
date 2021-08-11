@@ -25,10 +25,10 @@ users = {
 }
 bank_name = "中国工商银行昌平支行"
 
-def sign_in():
+def sign_in():  #登录操作
     a = input("请输入您的账号:")
     b = input("请输入您的密码:")
-    if a in users and b == users[a]["password"]:
+    if a in users and b == users[a]["password"]:    #账号，密码正确
         print("登录成功")
         return a
     else:
@@ -43,7 +43,7 @@ def save():
         pass
     else :
         s = int(input("请输入您要储存的金额:"))
-        users[a]["money"] = users[a]["money"] + s
+        users[a]["money"] = users[a]["money"] + s   #存钱
         print("储存成功，您现在的余额为￥",users[a]["money"])
         pass
 
@@ -55,7 +55,7 @@ def withdraw():
         pass
     else :
         s = int(input("请输入您要取出的金额:"))
-        users[a]["money"] = users[a]["money"] - s
+        users[a]["money"] = users[a]["money"] - s   #取钱
         print("储存成功，您现在的余额为￥",users[a]["money"])
         pass
 
@@ -67,7 +67,7 @@ def transfer():
         b = input("请输入你要转账的账号:")
         s = int(input("请输入转出的金额:"))
         users[a]["money"] = users[a]["money"] - s
-        users[b]["money"] = users[b]["money"] + s
+        users[b]["money"] = users[b]["money"] + s   #转账
         print("转账成功，您现在的余额为￥",users[a]["money"])
         pass
 
@@ -77,7 +77,7 @@ def search():
         pass
     else:
         print("以下是你的个人信息:")
-        u = [users[a][x]for x in users[a]]
+        u = [users[a][x]for x in users[a]]  #用数组u储存数据库中key为a下的各个value值
         info = '''
                 ---------------个人信息----------------
                 账号:%s
@@ -89,7 +89,7 @@ def search():
             '''
         print(info %(a, u[0], u[1], u[2]
                       , u[3], u[4], u[5],
-                      u[6], u[7]))
+                      u[6], u[7]))  #模板打印
         pass
 
 def bank_addUser(account,username,password,country,province,street,door):
