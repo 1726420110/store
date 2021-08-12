@@ -96,21 +96,20 @@ while i <= 20:
 
 
 count = []
-
-for key,value  in enumerate(mycart): #统计每个商品在列表中出现几次
+for key,value in enumerate(mycart):     #用count储存每个商品的数量
     if value in mycart[:key]:
         continue
     count.append(mycart.count(mycart[key]))
 
-#删除二维列表这重复的行，必须先把列表中每个元素转化为tuple，因为list不可哈希但是tuple可哈希
-mycart = list(set([tuple(t) for t in mycart]))
+mycart2 = []
 
-for k in mycart:    #tuple换回list
-    mycart[mycart.index(k)] = list(k)
+for row in range(len(mycart)):  #用mycart2储存mycart中不重复的值
+    if not mycart[row] in mycart2:
+        mycart2.append(mycart[row])
 
 print("以下是您的购物小条，请拿好！")
 print("---------------------------------------")
-for key,value  in enumerate(mycart):
+for key,value  in enumerate(mycart2):
     print(key,"------",value[0],"  价格：￥",value[1],"  数量:",count[key])
 print("---------------------------------------")
 print("您的余额还剩：￥",money)
