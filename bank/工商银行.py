@@ -1,5 +1,4 @@
 import random
-import 农业银行
 
 # 准备数据库和开户行名称
 users = {
@@ -26,6 +25,7 @@ users = {
 }
 bank_name = "中国工商银行昌平支行"
 
+# 登录操作
 def sign_in():
     a = input("请输入您的账号:")
     if a in users:
@@ -38,15 +38,16 @@ def sign_in():
             return 2
     else:
         print("您的账号不存在")
+        return 1
 
-
+# 跨行转账操作
 def Super_transfer(a,b):
-    if b in 农业银行.users:
-        print("1")
+    from 农业银行 import users1  # 导入农行数据库
+    if b in users1:
         s = int(input("请输入转出的金额:"))
         m = users[a]["money"]
         Service_Charge = 0
-        if s <= 2000:
+        if s <= 2000:   # 手续费计算
             Service_Charge = 1.6
         elif 2000 < s <= 5000:
             Service_Charge = 4
@@ -58,17 +59,18 @@ def Super_transfer(a,b):
             Service_Charge = round(s*0.0003,2)
             if Service_Charge > 50:
                 Service_Charge = 50
-        if s <= m + Service_Charge:
+        if s <= m + Service_Charge:  # 账款计算
             users[a]["money"] = users[a]["money"] - s - Service_Charge
-            农业银行.users[b]["money"] = 农业银行.users[b]["money"] + s
+            users1[b]["money"] = users1[b]["money"] + s
             return 1
         else:
-            return 3
+            return 3    #余额不足
     else:
-        return 2
+        return 2    #账号不存在
 
+# 存钱操作
 def save():
-    a = sign_in()
+    a = sign_in()   #登录
     if a == 2 or a == 1:
         return a
     else :
@@ -76,9 +78,7 @@ def save():
         users[a]["money"] = users[a]["money"] + s
         print("储存成功，您现在的余额为￥",users[a]["money"])
 
-
-
-
+# 取钱操作
 def withdraw():
     a = sign_in()
     if a == 2 or a == 1:
@@ -86,20 +86,20 @@ def withdraw():
     else :
         s = int(input("请输入您要取出的金额:"))
         m = users[a]["money"]
-        if s <= m:
+        if s <= m:  #余额判断
             users[a]["money"] = users[a]["money"] - s
             print("取出成功，您现在的余额为￥",users[a]["money"])
         else:
             print("你没那么多钱，爬")
 
-
+# 转账操作
 def transfer():
     a = sign_in()
     if a == 2 or a == 1:
         return a
     else:
         b = input("请输入你要转账的账号:")
-        if b in users:
+        if b in users:  # 本行转账
             s = int(input("请输入转出的金额:"))
             m = users[a]["money"]
             if s <= m:
@@ -108,19 +108,18 @@ def transfer():
                 print("转账成功，您现在的余额为￥",users[a]["money"])
             else:
                 print("你没那么多钱，爬")
-        else:
+        else:   # 本行不存在账户，进入跨行数据库判断
+            from 农业银行 import users1  # 导入农行数据库
             n = Super_transfer(a,b)
             if n == 1:
                 print("转账成功，您现在的余额为￥", users[a]["money"])
-                print(农业银行.users[b]["money"])
+                print(users1[b]["money"])
             elif n == 2:
                 print("转账账号不存在")
             elif n == 3:
                 print("你没那么多钱，爬")
 
-
-
-
+# 查询账户信息操作
 def search():
     a = sign_in()
     if a == 2 or a == 1:
@@ -141,7 +140,7 @@ def search():
                       , u[3], u[4], u[5],
                       u[6], u[7]))
 
-
+#用户操作—开户
 def bank_addUser(account,username,password,country,province,street,door):
     # 1.看银行账户是否已满，满了返回3
     if len(users) > 100:
@@ -193,6 +192,7 @@ def addUser():
     elif status == 3:
         print("对不起，数据库已满")
 
+# 主界面
 def welcme():
     print("----------------------------------")
     print("-      中国工商银行账户管理系统       -")
@@ -205,6 +205,7 @@ def welcme():
     print("-     6.退出                      -")
     print("----------------------------------")
 
+# 主程序
 def start():
     while True:
         welcme()
@@ -225,4 +226,6 @@ def start():
         else:
             print("输入错误，请重新输入")
 
-start()
+
+if __name__=="__main__":
+    start() #开始运行
