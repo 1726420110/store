@@ -52,7 +52,7 @@ YM = sum(Sales_Statistics[key]["销售量"] * Sales_Statistics[key]["单价"] fo
 YM = round(YM, 2)
 print("全年的销售额为:", YM)
 # 每件衣服的销售（件数）占比
-YS = sum(Sales_Statistics[key]["销售量"] for key in Sales_Statistics)  # 计算总销售额YS
+YS = sum(Sales_Statistics[key]["销售量"] for key in Sales_Statistics)  # 计算总销售量YS
 print("每件衣服的销售（件数）占比:")
 for key in Sales_Statistics:
     print(key, ":", round(Sales_Statistics[key]["销售量"] / YS * 100, 2), "%")
