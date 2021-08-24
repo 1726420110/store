@@ -32,45 +32,42 @@ def Super_transfer(a, b):
     # 在农行数据库查询转账账号
     sql = "select account from ny_bank"
     u1 = select(sql)
-    data = []
-    for i in u1:  # 遍历所有账号
-        data.append(i[0])
-    u1 = data  # 账号表
-    if b in u1:
-        s = int(input("请输入转出的金额:"))
-        # 在数据库查询金额
-        sql = "select money from bank where account = %s"
-        param = [a]
-        m = select(sql, param)
-        for i in m:
-            m = i[0]
-        service_charge = 0
-        if s <= 2000:  # 手续费计算
-            service_charge = 1.6
-        elif 2000 < s <= 5000:
-            service_charge = 4
-        elif 5000 < s <= 10000:
-            service_charge = 8
-        elif 10000 < s <= 50000:
-            service_charge = 12
-        elif s > 50000:
-            service_charge = round(s * 0.0003, 2)
-            if service_charge > 50:
-                service_charge = 50
-        if s <= m + service_charge:  # 账款计算
-            # 转出账号减去转出额
-            sql = "update bank set money = money  - %s - %s where account = %s"
-            param = [s, service_charge, a]
-            update(sql, param)
-            m = m - s - service_charge
-            # 转入账号加上转入额
-            sql = "update ny_bank set money = money  + %s where account = %s"
-            param = [s, b]
-            update(sql, param)
-            print("转账成功，您现在的余额为￥", m)
-            return 1
-        else:
-            return 3  # 余额不足
+    print(u1)
+    for i in u1:
+        if b in i:
+            s = int(input("请输入转出的金额:"))
+            # 在数据库查询金额
+            sql = "select money from bank where account = %s"
+            param = [a]
+            m = select(sql, param)
+            m = m[0][0]
+            service_charge = 0
+            if s <= 2000:  # 手续费计算
+                service_charge = 1.6
+            elif 2000 < s <= 5000:
+                service_charge = 4
+            elif 5000 < s <= 10000:
+                service_charge = 8
+            elif 10000 < s <= 50000:
+                service_charge = 12
+            elif s > 50000:
+                service_charge = round(s * 0.0003, 2)
+                if service_charge > 50:
+                    service_charge = 50
+            if s <= m + service_charge:  # 账款计算
+                # 转出账号减去转出额
+                sql = "update bank set money = money  - %s - %s where account = %s"
+                param = [s, service_charge, a]
+                update(sql, param)
+                m = m - s - service_charge
+                # 转入账号加上转入额
+                sql = "update ny_bank set money = money  + %s where account = %s"
+                param = [s, b]
+                update(sql, param)
+                print("转账成功，您现在的余额为￥", m)
+                return 1
+            else:
+                return 3  # 余额不足
     else:
         return 2  # 账号不存在
 
@@ -90,8 +87,7 @@ def save():
         sql = "select money from bank where account = %s"
         param = [a]
         m = select(sql, param)
-        for i in m:
-            m = i[0]
+        m = m[0][0]
         print("储存成功，您现在的余额为￥", m)
 
 
@@ -106,8 +102,7 @@ def withdraw():
         sql = "select money from bank where account = %s"
         param = [a]
         m = select(sql, param)
-        for i in m:
-            m = i[0]
+        m = m[0][0]
         if s <= m:  # 余额判断
             # 在数据库修改金额
             sql = "update bank set money = money  - %s where account = %s"
@@ -129,31 +124,28 @@ def transfer():
         # 在数据库查询转账账号
         sql = "select account from bank"
         u1 = select(sql)
-        data = []
-        for i in u1:  # 遍历所有账号
-            data.append(i[0])
-        u1 = data  # 账号表
-        if b in u1:  # 本行转账
-            s = int(input("请输入转出的金额:"))
-            # 在数据库查询金额
-            sql = "select money from bank where account = %s"
-            param = [a]
-            m = select(sql, param)
-            for i in m:
-                m = i[0]
-            if s <= m:
-                # 转出账号减去转出额
-                sql = "update bank set money = money  - %s where account = %s"
-                param = [s, a]
-                update(sql, param)
-                m -= s
-                # 转入账号加上转入额
-                sql = "update bank set money = money  + %s where account = %s"
-                param = [s, b]
-                update(sql, param)
-                print("转账成功，您现在的余额为￥", m)
-            else:
-                print("你没那么多钱，爬")
+        print(u1)
+        for i in u1:
+            if b in i:  # 本行转账
+                s = int(input("请输入转出的金额:"))
+                # 在数据库查询金额
+                sql = "select money from bank where account = %s"
+                param = [a]
+                m = select(sql, param)
+                m = m[0][0]
+                if s <= m:
+                    # 转出账号减去转出额
+                    sql = "update bank set money = money  - %s where account = %s"
+                    param = [s, a]
+                    update(sql, param)
+                    m -= s
+                    # 转入账号加上转入额
+                    sql = "update bank set money = money  + %s where account = %s"
+                    param = [s, b]
+                    update(sql, param)
+                    print("转账成功，您现在的余额为￥", m)
+                else:
+                    print("你没那么多钱，爬")
         else:
             # 本行不存在账户，进入跨行数据库判断
             n = Super_transfer(a, b)
@@ -176,7 +168,6 @@ def search():
         param = [a]
         u = select(sql, param)
         u = u[0]
-        print(u)
         info = '''
                 ---------------个人信息----------------
                 账号:%s
@@ -195,12 +186,13 @@ def bank_addUser(username, password, country, province, street, door):
     # 获取账号数据,以判断是否重复
     sql = "select account from bank"
     acc = select(sql)
-    data = []
-    for i in acc:  # 遍历所有账号
-        data.append(i[0])
-    acc = data
-    while account in acc:
-        account = str(random.randint(10000000, 99999999))  # 假如账号重复，重随账号
+    date = []
+    for i in acc:
+        date.append(i[0])
+    print(date)
+    # 假如账号重复，重随账号
+    while account in date:
+        account = str(random.randint(10000000, 99999999))
 
     # 2.正常开户，将用户信息存在数据库
     sql = "insert  bank  value (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
@@ -237,7 +229,7 @@ def addUser():
 
 
 # 主界面
-def welcme():
+def welcome():
     print("----------------------------------")
     print("-      中国工商银行账户管理系统       -")
     print("----------------------------------")
@@ -253,7 +245,7 @@ def welcme():
 # 主程序
 def start():
     while True:
-        welcme()
+        welcome()
         chose = input("请输入您的业务编号:")
         if chose == '1':
             addUser()
@@ -270,6 +262,5 @@ def start():
             exit()
         else:
             print("输入错误，请重新输入")
-
 
 start()  # 开始运行
