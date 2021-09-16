@@ -12,7 +12,7 @@ from appium import webdriver
 class TestLogin(TestCase):
 
     def setUp(self) -> None:
-        self.vs = os.system('adb shell getprop ro.build.version.release')  # 获取手机系统版本
+        vs = os.system('adb shell getprop ro.build.version.release')  # 获取手机系统版本
         # dir_path = os.path.dirname(os.path.abspath(__file__))
         # file_path = os.path.join(dir_path, 'douyinjisu.apk')    #安装包路径
 
@@ -38,7 +38,7 @@ class TestLogin(TestCase):
         # caps["platformVersion"] = "10"
         self.caps["noReset"] = "True"  # 不初始化
 
-        self.driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
+        self.driver = webdriver.Remote("http://localhost:4723/wd/hub", self.caps)
         self.get_h = self.driver.get_window_size()['height']  # 获取屏幕分辨率
         self.get_w = self.driver.get_window_size()['width']
     def tearDown(self) -> None:
